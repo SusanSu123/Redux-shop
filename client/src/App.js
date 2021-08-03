@@ -2,9 +2,15 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {
   ApolloClient,
+  ApolloLink,
   ApolloProvider,
-
+  HttpLink
 } from '@apollo/client';
+
+import { onError } from 'apollo-link-error';
+
+import { Provider } from 'react-redux';
+import store from './redux/store';
 
 
 import Home from './pages/Home';
@@ -16,10 +22,9 @@ import Nav from './components/Nav';
 import Success from './pages/Success';
 import OrderHistory from './pages/OrderHistory';
 
-import { Provider } from 'react-redux';
-import store from './redux/store';
-
-
+const errorLink = onError(({ graphQLErrors }) => {
+  if (graphQLErrors) graphQLErrors.map(({ message }) => console.log(message))
+});
 
 const client = new ApolloClient({
   request: (operation) => {
@@ -27,13 +32,13 @@ const client = new ApolloClient({
     operation.setContext({
       headers: {
         authorization: token ? `Bearer ${token}` : ''
-      }
+      },
+      link: ApolloLink.from([errorLink, HttpLink])
     })
-
   },
   uri: '/graphql',
-
 })
+
 
 function App() {
   return (
