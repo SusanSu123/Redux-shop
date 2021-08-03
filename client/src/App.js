@@ -4,6 +4,7 @@ import {
   ApolloClient,
   ApolloLink,
   ApolloProvider,
+  InMemoryCache,
   HttpLink
 } from '@apollo/client';
 
@@ -33,7 +34,8 @@ const client = new ApolloClient({
       headers: {
         authorization: token ? `Bearer ${token}` : ''
       },
-      link: ApolloLink.from([errorLink, HttpLink])
+      link: ApolloLink.from([errorLink, HttpLink]),
+      cache: new InMemoryCache()
     })
   },
   uri: '/graphql',
