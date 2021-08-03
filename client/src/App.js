@@ -35,10 +35,12 @@ const client = new ApolloClient({
         authorization: token ? `Bearer ${token}` : ''
       },
       link: ApolloLink.from([errorLink, HttpLink]),
-      cache: new InMemoryCache()
+
     })
+
   },
   uri: '/graphql',
+  cache: new InMemoryCache(),
 })
 
 
